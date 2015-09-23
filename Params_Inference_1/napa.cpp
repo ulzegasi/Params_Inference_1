@@ -10,12 +10,18 @@
 #include <random>
 #include <algorithm>
 #include <functional>
-#include "mdfun.h"
+#include "napa.h"
+#include "vecfun.h"
+#include "Vfun.h"
+#include "aVfun.h"
+#include "adept.h"
 using namespace std;
 
-void napa(vector<double> & theta, vector<double> & u, vector<double> & p, vector<double> & mp,
-	int counter, int n, int j, int N, int nparams, double T, double dt, double dtau, double m_stg, double m_bdy, 
-	vector<double> & time_respa_f, vector<double> & time_respa_s, int nsample_burnin)
+
+void napa(vector<double> & theta, vector<double> & u, vector<double> & p, vector<double> & mp, vector<double> & bq, vector<double> & lnr_der,
+	int counter, int n, int j, int N, int nparams, double sigma, double T, double dt, double dtau, double m_stg, double m_bdy, 
+	vector<double> & time_respa_f, vector<double> & time_respa_s, int nsample_burnin, vector<adouble> & x,
+	vector<double> & force_old, vector<double> & force_new, vector<double> & dV_vec, adept::Stack & stack)
 {
 	// Fast outer propagator (V_N), step dtau/2 
 	clock_t timef = clock();
@@ -34,26 +40,37 @@ void napa(vector<double> & theta, vector<double> & u, vector<double> & p, vector
 
 	// Slow inner propagator (V_n, V_1), step dtau
     clock_t time1 = clock();
-	vector<double> force_old(nparams+N);
-	vector<double>::iterator oldit = force_old.begin();
+	/*dV_n(stack, n, j, sigma, T, dt, bq, theta, u, x, dVn);
+	dV_1(stack, n, j, N, T, dt, lnr_der, theta, u, x, dV1);
+	force_old = vtimes(-1.0,vsum(dVn,dV1));*/
+
+	dV_fun(stack, n, j, N, sigma, T, dt, bq, lnr_der, theta, u, x, dV_vec);
+	// force_old = vtimes(-1.0,dV_vec);  // NOT NECESSARY: sign changed already in the definition of aV_n_1 
+	force_old = dV_vec;
+	
+	// vector<double>::iterator oldit = force_old.begin();
 	// force_old = -dV(theta,u) ... This must be implemented
 	// For the time being just for testing purposes, instead of taking the derivative,
 	// I divide theta by 2 and multiply u by 0.75
-	for_each(theta.begin(), theta.end(), [&](double elem){*oldit = elem/2.0; ++oldit;});
-	for_each(u.begin(), u.end(), [&](double elem){*oldit = elem*0.75; ++oldit;});
+	// for_each(theta.begin(), theta.end(), [&](double elem){*oldit = elem/2.0; ++oldit;});
+	// for_each(u.begin(), u.end(), [&](double elem){*oldit = elem*0.75; ++oldit;});
     
 	for (int s = 1; s <= (n+1); ++s)
 		u[(s-1)*j] += dtau * ( p[nparams+(s-1)*j]  + (dtau/2.0) * force_old[nparams+(s-1)*j] ) / m_bdy;
 	for (int ix = 1; ix <= nparams; ++ix)
 		theta[ix-1] += dtau * ( p[ix-1]  + (dtau/2.0) * force_old[ix-1] ) / mp[ix-1];
 
-	vector<double> force_new(nparams+N);
-	vector<double>::iterator newit = force_new.begin();
+	dV_fun(stack, n, j, N, sigma, T, dt, bq, lnr_der, theta, u, x, dV_vec);
+	// force_new = vtimes(-1.0,dV_vec);  // NOT NECESSARY: sign changed already in the definition of aV_n_1 
+	force_new = dV_vec;
+
+	// vector<double> force_new(nparams+N);
+	// vector<double>::iterator newit = force_new.begin();
 	// force_new = -dV(theta,u) ... This must be implemented
 	// For the time being just for testing purposes, instead of taking the derivative,
 	// I divide theta by 2 and multiply u by 0.75
-	for_each(theta.begin(), theta.end(), [&](double elem){*newit = elem/2.0; ++newit;});
-	for_each(u.begin(), u.end(), [&](double elem){*newit = elem*0.75; ++newit;});
+	// for_each(theta.begin(), theta.end(), [&](double elem){*newit = elem/2.0; ++newit;});
+	// for_each(u.begin(), u.end(), [&](double elem){*newit = elem*0.75; ++newit;});
 
 	for (int ix = 1; ix <= nparams+N; ++ix)
 		p[ix-1] += (dtau/2)*( force_old[ix-1] + force_new[ix-1] );

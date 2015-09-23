@@ -21,9 +21,27 @@
     <ClCompile Include="napa.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Vfun.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="aVfun.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mdfun.h">
+    <ClInclude Include="vecfun.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vfun.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="aVfun.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="napa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="arraysize.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
