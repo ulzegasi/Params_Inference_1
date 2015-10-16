@@ -21,5 +21,7 @@ inline double w_stg(int k, double T, double dt, double m_stg) {
 
 void napa(vector<double> &, vector<double> &, vector<double> &, vector<double> &, vector<double> &, vector<double> &,
 	int, int, int, int, int, double, double, double, double, double, double,
-	vector<double> &, vector<double> &, int, vector<adouble> &, vector<double> &, vector<double> &, vector<double> &,
+	vector<double> &, vector<double> &, int, vector<adouble> &,
 	adept::Stack &);
+
+// vector<double> &, vector<double> &, vector<double> &,

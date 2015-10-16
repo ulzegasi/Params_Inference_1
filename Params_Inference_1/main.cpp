@@ -161,7 +161,7 @@ int main(){
 
 	// **************  HMC parameters *************** //
 	const int nsample_burnin = 0;         // Number of points in the MCMC
-	const int nsample_eff = 100;
+	const int nsample_eff = 20000;
 	const int nsample = nsample_eff + nsample_burnin;
 
 	const double dtau = 0.25;  // MD time step
@@ -283,28 +283,20 @@ int main(){
 	vector<double> time_respa_f(nsample_eff);
 
 	// **************  Containers for AD  *************** //
-	vector<double> force_old(nparams+N);
-	vector<double> force_new(nparams+N);
+	// vector<double> force_old(nparams+N);
+	// vector<double> force_new(nparams+N);
 	// vector<double> dVN(N);
 	/*vector<double> dVn(nparams+N);
 	vector<double> dV1(nparams+N);*/
-	vector<double> dV_vec(nparams+N);
+	// vector<double> dV_vec(nparams+N);
 	adept::Stack stack;
 	vector<adouble> x(nparams+N);
 
-	//adept::set_values(&x[0],nparams,&theta[0]);  // Construct a vector of adoubles where the first ntheta elements are theta
-	//adept::set_values(&x[nparams],N,&u[0]);     // and the remaining nu elements are u
-	//stack.new_recording();
-	//(aV_n_1(n, j, N, sigma, T, dt, bq, lnr_der, x, nparams)).set_gradient(1.0);
-	//stack.compute_adjoint();
-	//adept::get_gradients(&x[0], nparams+N, &dV_vec[0]);
-
 	// **************  Masses (burn-in)  *************** //
 	double m_bdy = 10.0;     // m = m_q / dt
-	double m_stg = 1.0;      // we assume m_q prop. to dt ==> m = costant     
-	array<double,nparams> m_theta;
-	m_theta[0]=1.0;
-	m_theta[1]=1.0;
+	double m_stg = 1.0;      // we assume m_q prop. to dt ==> m = costant
+	double m_theta_burnin_value = 1.0;
+	vector<double> m_theta(nparams,m_theta_burnin_value);
 
 	for (int ix = 0; ix < nparams; ++ix)
 		(*mp_pt)[ix] = m_theta[ix];
@@ -332,12 +324,12 @@ int main(){
 	// ************** Redefinition of masses (effective HMC loops) *************** //
 	double m_bdy_burnin = m_bdy;
 	double m_stg_burnin = m_stg;
-	array<double,nparams> m_theta_burnin = m_theta;
+	vector<double> m_theta_burnin = m_theta;
 
-	m_bdy = 720.0;       // m = m_q / dt
-	m_stg = 130.0;       // we assume m_q prop. to dt ==> m = costant     
+	m_bdy = 680.0;       // m = m_q / dt
+	m_stg = 300.0;       // we assume m_q prop. to dt ==> m = costant     
 	m_theta[0] = 150.0;  // refers to beta
-	m_theta[1] = 150.0;  // refers to gamma
+	m_theta[1] = 130.0;  // refers to gamma
 
 	for (int ix = 0; ix < nparams; ++ix)
 		(*mp_pt)[ix] = m_theta[ix];
@@ -357,7 +349,7 @@ int main(){
 
 	for (int counter = (nsample_burnin + 1); counter <= nsample; ++counter)
 	{
-		clock_t t0 = clock();
+		// clock_t t0 = clock();
 		// Sample momenta
 		nrand(randvec);
 		*p_pt = vtimes(*sqrt_mp_pt,randvec);
@@ -367,7 +359,7 @@ int main(){
 		H_old = vsum(vdiv(vsquare(*p_pt),vtimes(2.0,*mp_pt))) + V_N(n,j,T,dt,u) + V_n(n,j,sigma,T,dt,bq,theta,u) + V_1(n,j,N,T,dt,lnr_der,theta,u);
 		energies.push_back(H_old);
 
-		if ( _isnan(H_old) != 0) {
+		if ( isnan(H_old) != 0) {
 			cerr << "\n\nIteration " << counter << " --> energy values diverged...\n\n";
 			return -1;}
 
@@ -380,7 +372,9 @@ int main(){
 		for (int counter_napa = 1; counter_napa <= n_napa; ++counter_napa)
 		{
 			napa(theta, u, p, mp, bq, lnr_der, counter, n, j, N, nparams, sigma, T, dt, dtau, m_stg, m_bdy, 
-				time_respa_f, time_respa_s, nsample_burnin, x, force_old, force_new, dV_vec, stack);
+				time_respa_f, time_respa_s, nsample_burnin, x, stack);
+
+			// force_old, force_new, dV_vec, 
 		}
 		time_respa[counter-nsample_burnin-1] = ((float)(clock()-t1)/CLOCKS_PER_SEC);
 
@@ -431,7 +425,7 @@ int main(){
 	vector< vector<double> > qs(u_sample.size(), vector<double>(u_sample[0].size()));
 	vector< vector<double> > predy(u_sample.size(), vector<double>(u_sample[0].size()));
 
-	for (int sample_ind = 0; sample_ind < (nsample+1); ++sample_ind)
+	/*for (int sample_ind = 0; sample_ind < (nsample+1); ++sample_ind)
 	{
 		for (int s = 1; s <= n; ++s)
 		{
@@ -446,8 +440,33 @@ int main(){
 			}
 		}
 		qs[sample_ind][N - 1] = u_sample[sample_ind][N - 1];
-	}
+	}*/
+
+	// ABOVE, slow method (cache thrashing?)
+	// BELOW, much faster
 	
+	for (int sample_ind = 0; sample_ind < (nsample + 1); ++sample_ind)
+	{
+		for (int s = 1; s <= n; ++s)
+		{
+			qs[sample_ind][(s - 1)*j] = u_sample[sample_ind][(s - 1)*j];
+		}
+		qs[sample_ind][N - 1] = u_sample[sample_ind][N - 1];
+	}
+
+	for (int sample_ind = 0; sample_ind < (nsample + 1); ++sample_ind)
+	{
+		for (int s = n; s > 0; --s)
+		{
+			for (int k = j; k > 1; --k)
+			{
+				qs[sample_ind][(s - 1)*j + k - 1] = u_sample[sample_ind][(s - 1)*j + k - 1] +
+					((double)(k - 1.0) / k)*qs[sample_ind][(s - 1)*j + k] +
+					((double)(1.0 / k))*u_sample[sample_ind][(s - 1)*j];
+			}
+		}
+	}
+
 	for (int sample_ind = 0; sample_ind < (nsample+1); ++sample_ind)
 	{
 		for (int ind = 0; ind < N; ++ind)
@@ -456,13 +475,15 @@ int main(){
 		}
 	}
 
-	cout << "\nBack transformations u -> q,y completed in " << ((float)(clock()-back_transform)/CLOCKS_PER_SEC) << " seconds\n";
+	cout << "\nBack transformations u -> q,y completed in " 
+		<< ((float)(clock()-back_transform)/CLOCKS_PER_SEC) << " seconds\n";
+
 
 	// ******************************************************* //
 	// *******************  Save results ******************** //
 	// ******************************************************* //
 
-	const string fname = "_test";
+	const string fname = "_cpptest";
 
 	// *******************  Parameters ******************** //
 	string param_names[] = {"N", "j", "n", "t[1]", "dt", "nparams", "true_K", "true_gam", "sigma", "K", "gam", 
