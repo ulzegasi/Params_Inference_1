@@ -23,7 +23,7 @@ using adept::adouble;
 
 // Useful directories
 const string dir  = "C:/Users/ulzegasi/Julia_files/ParInf_HMC/";
-const string dir2 = "C:/Users/ulzegasi/Julia_files/ParInf_HMC/temp_data/";
+const string dir2 = "C:/Users/ulzegasi/Julia_files/ParInf_HMC/good_results/n10 j30 cpp/";
 const string dir3 = "C:/Users/ulzegasi/Julia_files/ParInf_HMC/input_data/";
 
 // Read time interval from file
@@ -161,7 +161,7 @@ int main(){
 
 	// **************  HMC parameters *************** //
 	const int nsample_burnin = 0;         // Number of points in the MCMC
-	const int nsample_eff = 20000;
+	const int nsample_eff = 50000;
 	const int nsample = nsample_eff + nsample_burnin;
 
 	const double dtau = 0.25;  // MD time step
@@ -240,11 +240,15 @@ int main(){
 
 	vector<double> u(N);
 
-	for (int s = 0; s < 1; ++s)
+	for (int s = 0; s <= (n-1); ++s)
 	{
 		u[s*j] = q[s*j];
-		for (int k = 2; k < j+1; ++k)
-			u[s*j+k-1] = q[s*j+k-1] - ( (k-1)*q[s*j+k] + q[s*j] )/k;
+		for (int k = 2; k <= j; ++k)
+			// IMPORTANT: the transformation that should be applied is :
+			// u[s*j+k-1] = q[s*j+k-1] - ( (k-1)*q[s*j+k] + q[s*j] )/k;
+			// BUT: it is always = 0 when the{ q } between data points are linearly distributed
+			// For staging beads as linear interpolation of data points, therefore
+			u[s*j + k - 1] = 0.0;
 	}
 	u[N-1] = q[N-1];
 
@@ -265,7 +269,7 @@ int main(){
 	// **************  Init container for masses and momenta  *************** //
 	vector<double> mp(nparams+N);
 	vector<double> sqrt_mp(nparams+N);
-	vector<double> p(nparams+N);
+	vector<double> p; //(nparams+N);
 	vector<double> * mp_pt = &mp;
 	vector<double> * sqrt_mp_pt = &sqrt_mp;
 	vector<double> * p_pt = &p;
@@ -354,9 +358,22 @@ int main(){
 		nrand(randvec);
 		*p_pt = vtimes(*sqrt_mp_pt,randvec);
 
+		/*for (int ix = 0; ix < 13; ++ix)
+			cout << p[ix] << " ";
+		cout << endl;
+
+		for (int ix = 0; ix < y.size(); ++ix)
+			cout << y[ix] << " ";
+		cout << endl;*/
+
+
+		//if (!pdat(p))   // Read time points from file
+		//	return -1;
+
 		// Calculate energy
 		// H_old = V_N_fun(u) + V_n_fun(theta,u) + V_1_fun(theta,u) + sum((p.^2)./(2*mp))
 		H_old = vsum(vdiv(vsquare(*p_pt),vtimes(2.0,*mp_pt))) + V_N(n,j,T,dt,u) + V_n(n,j,sigma,T,dt,bq,theta,u) + V_1(n,j,N,T,dt,lnr_der,theta,u);
+		/*cout << H_old << endl;*/
 		energies.push_back(H_old);
 
 		if ( isnan(H_old) != 0) {
@@ -373,12 +390,15 @@ int main(){
 		{
 			napa(theta, u, p, mp, bq, lnr_der, counter, n, j, N, nparams, sigma, T, dt, dtau, m_stg, m_bdy, 
 				time_respa_f, time_respa_s, nsample_burnin, x, stack);
-
 			// force_old, force_new, dV_vec, 
 		}
 		time_respa[counter-nsample_burnin-1] = ((float)(clock()-t1)/CLOCKS_PER_SEC);
 
 		// Caluclate energy of proposal state => Metropolis accept/reject
+
+		/*H_new = vsum(vdiv(vsquare(*p_pt), vtimes(2.0, *mp_pt))) + V_N(n, j, T, dt, u) + V_n(n, j, sigma, T, dt, bq, theta, u) + V_1(n, j, N, T, dt, lnr_der, theta, u);
+		cout << setprecision(16) << H_new << endl;*/
+
 		if ( theta[1] <= gam_min || theta[1] >= gam_max || (T*theta[1]/pow(theta[0],2) <= K_min) || (T*theta[1]/pow(theta[0],2) >= K_max) )
 		{
 			theta = (*theta_save_pt); u = (*u_save_pt);
@@ -471,7 +491,7 @@ int main(){
 	{
 		for (int ind = 0; ind < N; ++ind)
 		{
-			predy[sample_ind][ind] = r[ind]*exp(theta_sample[sample_ind][1]*qs[sample_ind][ind]); // y = r*exp(beta*q)
+			predy[sample_ind][ind] = r[ind]*exp(theta_sample[sample_ind][0]*qs[sample_ind][ind]); // y = r*exp(beta*q)
 		}
 	}
 
@@ -490,7 +510,7 @@ int main(){
 	"nsample_burnin", "nsample_eff", "m_bdy_burnin", "m_bdy", "m_theta_burnin", "m_theta_bet", 
 	"m_theta_gam", "m_stg_burnin", "m_stg", "dtau", "n_napa"};
 
-	double param_values[] = {N, j, n, t[1], dt, nparams, true_K, true_gam, sigma, K, gam, 
+	double param_values[] = {N, j, n, t[0], dt, nparams, true_K, true_gam, sigma, K, gam, 
 	nsample_burnin, nsample_eff, m_bdy_burnin, m_bdy, m_theta_burnin[0], m_theta[0], m_theta[1], 
 	m_stg_burnin, m_stg, dtau, n_napa};
 

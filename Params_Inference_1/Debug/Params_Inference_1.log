@@ -1,24 +1,24 @@
-﻿Build started 16/10/2015 15:52:49.
+﻿Build started 19/10/2015 17:34:50.
      1>Project "C:\Users\ulzegasi\Cpp\Params_Inference_1\Params_Inference_1\Params_Inference_1.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /openmp /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
          main.cpp
      1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(117): warning C4018: '<' : signed/unsigned mismatch
      1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(216): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(504): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(517): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(525): warning C4244: 'argument' : conversion from 'double' to 'unsigned int', possible loss of data
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(526): warning C4244: 'argument' : conversion from 'double' to 'unsigned int', possible loss of data
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(526): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(527): warning C4244: 'argument' : conversion from 'double' to 'unsigned int', possible loss of data
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(528): warning C4244: 'argument' : conversion from 'double' to 'unsigned int', possible loss of data
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(528): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(567): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(586): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(653): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(658): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(663): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(635): warning C4723: potential divide by 0
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(524): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(537): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(545): warning C4244: 'argument' : conversion from 'double' to 'unsigned int', possible loss of data
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(546): warning C4244: 'argument' : conversion from 'double' to 'unsigned int', possible loss of data
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(546): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(547): warning C4244: 'argument' : conversion from 'double' to 'unsigned int', possible loss of data
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(548): warning C4244: 'argument' : conversion from 'double' to 'unsigned int', possible loss of data
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(548): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(587): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(606): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(673): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(678): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(683): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\ulzegasi\cpp\params_inference_1\params_inference_1\main.cpp(655): warning C4723: potential divide by 0
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ulzegasi\Cpp\Params_Inference_1\Debug\Params_Inference_1.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\ulzegasi\Cpp\Params_Inference_1\Debug\Params_Inference_1.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ulzegasi\Cpp\Params_Inference_1\Debug\Params_Inference_1.lib" /MACHINE:X86 Debug\aVfun.obj
          Debug\main.obj
@@ -30,4 +30,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.50
+Time Elapsed 00:00:02.09
