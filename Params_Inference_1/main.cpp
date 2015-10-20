@@ -1,3 +1,11 @@
+//
+// Parameter inference with SDE model 
+//  
+// Created by Simone Ulzega, Carlo Albert (October, 2015)
+//
+// This is a serial version of the code
+//
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
