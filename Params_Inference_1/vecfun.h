@@ -42,7 +42,7 @@ template<typename elemType> vector<double> vsqrt(const vector<elemType> & vec)
 template<typename elemType> vector<elemType> vsquare(const vector<elemType> & vec)
 {
 	vector<elemType> vec2(vec.size());
-	vector<elemType>::iterator iter = vec2.begin();
+	auto iter = vec2.begin();
 	for_each(vec.begin(), vec.end(), [&](elemType elem){
 		*iter = pow(elem,2.0); ++iter;});
 	return vec2;
@@ -52,7 +52,7 @@ template<typename elemType> vector<elemType> vsquare(const vector<elemType> & ve
 template<typename elemType> vector<elemType> vtimes(elemType val, const vector<elemType> & vec)
 {
 	vector<elemType> vec_times_val(vec.size());
-	vector<elemType>::iterator iter = vec_times_val.begin();
+	auto iter = vec_times_val.begin();
 	for_each(vec.begin(), vec.end(), [&](elemType elem){
 		*iter = val*elem; ++iter;});
 	return vec_times_val;
@@ -70,7 +70,7 @@ template<typename elemType> vector<elemType> vtimes(const vector<elemType> & vec
 template<typename elemType> vector<elemType> vdiv(elemType val, const vector<elemType> & vec)
 {
 	vector<elemType> vec_div_val(vec.size());
-	vector<elemType>::iterator iter = vec_div_val.begin();
+	auto iter = vec_div_val.begin();
 	for_each(vec.begin(), vec.end(), [&](elemType elem){
 		*iter = elem/val; ++iter;});
 	return vec_div_val;
