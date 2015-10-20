@@ -3,7 +3,7 @@
 //  
 // Created by Simone Ulzega, Carlo Albert (October, 2015)
 //
-// This is a serial version of the code
+// This is the serial code
 //
 
 #include <iostream>
@@ -30,18 +30,18 @@ using namespace std;
 using adept::adouble;
 
 // Useful directories
-const string dir  = "C:/Users/ulzegasi/Julia_files/ParInf_HMC/";
-const string dir2 = "C:/Users/ulzegasi/Julia_files/ParInf_HMC/good_results/n10 j30 cpp/";
-const string dir3 = "C:/Users/ulzegasi/Julia_files/ParInf_HMC/input_data/";
+const string dir  = "C:/Users/ulzegasi/Cpp/Params_Inference_1/";
+const string dir2 = "C:/Users/ulzegasi/Cpp/Params_Inference_1/temp_data/";
+const string dir3 = "C:/Users/ulzegasi/Cpp/Params_Inference_1/input_data/";
 
 // Read time interval from file
 bool tdat( vector<double> & t_limits )
 {
-	ifstream ifs(dir+"t.dat");
+	ifstream ifs(dir3+"t.dat");
 	if (! ifs)
 	{
 		cerr << "\nInvalid file name or location "
-			<< dir+"t.dat" << " ... Aborting...\n\n";
+			<< dir3+"t.dat" << " ... Aborting...\n\n";
 		return false;
 	}
 	else
