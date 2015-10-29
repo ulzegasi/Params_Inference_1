@@ -169,7 +169,7 @@ int main(){
 
 	// **************  HMC parameters *************** //
 	const int nsample_burnin = 0;         // Number of points in the MCMC
-	const int nsample_eff = 50000;
+	const int nsample_eff = 40000;
 	const int nsample = nsample_eff + nsample_burnin;
 
 	const double dtau = 0.25;  // MD time step
@@ -432,7 +432,7 @@ int main(){
 		theta_sample.push_back(theta);
 		u_sample.push_back(u);
 
-		if (counter%100 == 0)
+		if (counter%1000 == 0)
 			cout << "\n" << counter << " loops completed in " << ((float)(clock()-tinit)/CLOCKS_PER_SEC) << " seconds\n";
 	}
 
